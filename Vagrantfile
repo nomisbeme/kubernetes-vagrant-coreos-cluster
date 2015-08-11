@@ -130,7 +130,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_version = ">= #{COREOS_VERSION}"
   config.vm.box_url = "#{upstream}/coreos_production_vagrant.json"
 
-  ["vmware_fusion", "vmware_workstation"].each do |vmware|
+  ["vmware_fusion", "vmware_workstation", "vmware_appcatalyst"].each do |vmware|
     config.vm.provider vmware do |v, override|
       override.vm.box_url = "#{upstream}/coreos_production_vagrant_vmware_fusion.json"
     end
@@ -330,7 +330,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         serialFile = File.join(logdir, "#{vmName}-serial.txt")
         FileUtils.touch(serialFile)
 
-        ["vmware_fusion", "vmware_workstation"].each do |vmware|
+        ["vmware_fusion", "vmware_workstation", "vmware_appcatalyst"].each do |vmware|
           kHost.vm.provider vmware do |v, override|
             v.vmx["serial0.present"] = "TRUE"
             v.vmx["serial0.fileType"] = "file"
@@ -352,15 +352,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
       end
 
-      ["vmware_fusion", "vmware_workstation", "virtualbox"].each do |h|
+      ["vmware_fusion", "vmware_workstation", "vmware_appcatalyst", "virtualbox"].each do |h|
         kHost.vm.provider h do |vb|
           vb.gui = GUI
         end
       end
-      ["vmware_fusion", "vmware_workstation"].each do |h|
+      ["vmware_fusion", "vmware_workstation", "vmware_appcatalyst"].each do |h|
         kHost.vm.provider h do |v|
           v.vmx["memsize"] = memory
           v.vmx["numvcpus"] = cpus
+          v.vmx["usb.present"] = "FALSE"
         end
       end
       ["parallels", "virtualbox"].each do |h|
